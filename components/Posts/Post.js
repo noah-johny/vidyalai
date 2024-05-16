@@ -46,7 +46,7 @@ const Content = styled.div(() => ({
 
 const Button = styled.button(() => ({
   position: 'absolute',
-  bottom: 0,
+  bottom: 'calc(50% - 25px)',
   backgroundColor: 'rgba(255, 255, 255, 0.5)',
   border: 'none',
   color: '#000',
@@ -66,36 +66,65 @@ const NextButton = styled(Button)`
 const Post = ({ post }) => {
   const carouselRef = useRef(null);
 
-  const handleNextClick = () => {
-    if (carouselRef.current) {
-      carouselRef.current.scrollBy({
-        left: 50,
-        behavior: 'smooth',
-      });
+  // Handle the event when the next button is clicked
+  const handleNextButtonClick = () => {
+    try {
+      const carousel = carouselRef.current;
+      const carouselWidth = carousel.offsetWidth;
+
+      if (carousel) {
+        // If reached the end, scroll to the beginning
+        if (carousel.scrollLeft + carouselWidth >= carousel.scrollWidth) {
+          carousel.scrollLeft = 0;
+        } else {
+          carousel.scrollBy({
+            left: carouselWidth,
+            behavior: 'smooth',
+          });
+        }
+      }
+    } catch (error) {
+      console.error('Error in handleNextButtonClick: ', error);
     }
   };
 
-  const handlePrevClick = () => {
-    if (carouselRef.current) {
-      carouselRef.current.scrollBy({
-        left: -70,
-        behavior: 'smooth',
-      });
+  // Handle the event when the previous button is clicked
+  const handlePrevButtonClick = () => {
+    try {
+      const carousel = carouselRef.current;
+      const carouselWidth = carousel.offsetWidth;
+
+      if (carousel) {
+        // If at the beginning, scroll to the end
+        if (carousel.scrollLeft === 0) {
+          carousel.scrollLeft = carousel.scrollWidth;
+        } else {
+          carousel.scrollBy({
+            left: -carouselWidth,
+            behavior: 'smooth',
+          });
+        }
+      }
+    } catch (error) {
+      console.error('Error in handlePrevButtonClick: ', error);
     }
+  };
+
+  // Render carousel items
+  const renderCarouselItems = () => {
+    return post.images.map((image, index) => (
+      <CarouselItem key={index}>
+        <Image src={image.url} alt={post.title} />
+      </CarouselItem>
+    ));
   };
 
   return (
     <PostContainer>
       <CarouselContainer>
-        <Carousel ref={carouselRef}>
-          {post.images.map((image, index) => (
-            <CarouselItem key={index}>
-              <Image src={image.url} alt={post.title} />
-            </CarouselItem>
-          ))}
-        </Carousel>
-        <PrevButton onClick={handlePrevClick}>&#10094;</PrevButton>
-        <NextButton onClick={handleNextClick}>&#10095;</NextButton>
+        <Carousel ref={carouselRef}>{renderCarouselItems()}</Carousel>
+        <PrevButton onClick={handlePrevButtonClick}>&#10094;</PrevButton>
+        <NextButton onClick={handleNextButtonClick}>&#10095;</NextButton>
       </CarouselContainer>
       <Content>
         <h2>{post.title}</h2>
@@ -105,6 +134,7 @@ const Post = ({ post }) => {
   );
 };
 
+// Prop types for Post component
 Post.propTypes = {
   post: PropTypes.shape({
     content: PropTypes.any,

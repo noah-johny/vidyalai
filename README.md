@@ -20,7 +20,7 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 
 ## TASKS
 **Note: These tasks need to be completed within 3.5 hours.**
-- [ ] Fix carousel scrolling UI: When navigation buttons are clicked, ensure a new image is shown. Additionally, center the carousel navigation buttons vertically relative to the image.
+- [x] Fix carousel scrolling UI: When navigation buttons are clicked, ensure a new image is shown. Additionally, center the carousel navigation buttons vertically relative to the image.
 - [ ] Replace dummy images by fetching each album of post using "https://jsonplaceholder.typicode.com/albums/1/photos" in /api/v1/posts route.
 - [ ] Make the top nav bar sticky during scrolling.
 - [ ] Implement functionality to load more posts upon clicking the "Load More" button. Hide the "Load More" button if no posts exist.
@@ -38,10 +38,10 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 
 - Push the changes from your local to the new repo on GitHub.
 
-- Update the readme by putting a check mark against the tasks you have completed. If you have not completed all the tasks, make sure to tick all the relevant ones. 
+- Update the readme by putting a check mark against the tasks you have completed. If you have not completed all the tasks, make sure to tick all the relevant ones.
 
 - Open a pull request from "your_name_vidyalai" to "master"
-Fill [this form](https://docs.google.com/forms/d/e/1FAIpQLSeACdInJitqQ8hncrJdsTYEXVuts0Rb_WlMhLihXz06MTFmwA/viewform) with a link to the pull request 
+Fill [this form](https://docs.google.com/forms/d/e/1FAIpQLSeACdInJitqQ8hncrJdsTYEXVuts0Rb_WlMhLihXz06MTFmwA/viewform) with a link to the pull request
 
 
 ## Evaluation Criteria
