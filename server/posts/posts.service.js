@@ -23,9 +23,31 @@ async function fetchPosts(params) {
       },
     );
 
+    // Fetch user information for each post
+    const postsWithUsers = await Promise.all(
+      posts.map(async post => {
+        try {
+          const { data: user } = await axios.get(
+            `https://jsonplaceholder.typicode.com/users/${post.userId}`,
+          );
+          return {
+            ...post,
+            userName: user.name,
+            userEmail: user.email,
+          };
+        } catch (error) {
+          console.error(
+            `Error fetching user information for post ${post.id}:`,
+            error,
+          );
+          return post;
+        }
+      }),
+    );
+
     // Fetch posts with images
     const postsWithImages = await Promise.all(
-      posts.map(async post => {
+      postsWithUsers.map(async post => {
         try {
           const { data: images } = await axios.get(
             `https://jsonplaceholder.typicode.com/albums/${post.id}/photos`,

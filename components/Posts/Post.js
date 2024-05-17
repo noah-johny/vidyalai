@@ -44,6 +44,15 @@ const Content = styled.div(() => ({
   },
 }));
 
+const HorizontalContent = styled.div(() => ({
+  padding: '10px',
+  '& > h2': {
+    marginBottom: '16px',
+  },
+  display: 'flex',
+  gap: 12,
+}));
+
 const Button = styled.button(() => ({
   position: 'absolute',
   bottom: 'calc(50% - 25px)',
@@ -62,6 +71,25 @@ const PrevButton = styled(Button)`
 const NextButton = styled(Button)`
   right: 10px;
 `;
+
+const Caption = styled.span(() => ({
+  fontSize: 12,
+  fontWeight: 500,
+}));
+
+const Avatar = styled.div(() => ({
+  width: '40px',
+  height: '40px',
+  borderRadius: '50%',
+  backgroundColor: '#ccc',
+  display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'center',
+  fontSize: '20px',
+  fontWeight: 'bold',
+  color: '#fff',
+  textTransform: 'uppercase',
+}));
 
 const Post = ({ post }) => {
   const [scrolling, setScrolling] = useState(false);
@@ -120,6 +148,16 @@ const Post = ({ post }) => {
     }
   };
 
+  // Get initials from the user name
+  const getInitials = name => {
+    const names = name.split(' ');
+    let initials = '';
+    names.forEach(n => {
+      initials += n.charAt(0);
+    });
+    return initials;
+  };
+
   // Render carousel items
   const renderCarouselItems = () => {
     return post.images.map((image, index) => (
@@ -131,11 +169,20 @@ const Post = ({ post }) => {
 
   return (
     <PostContainer>
+      <HorizontalContent>
+        <Avatar>{getInitials(post.userName)}</Avatar>
+        <div>
+          <h4>{post.userName}</h4>
+          <Caption>{post.userEmail}</Caption>
+        </div>
+      </HorizontalContent>
+
       <CarouselContainer>
         <Carousel ref={carouselRef}>{renderCarouselItems()}</Carousel>
         <PrevButton onClick={handlePrevButtonClick}>&#10094;</PrevButton>
         <NextButton onClick={handleNextButtonClick}>&#10095;</NextButton>
       </CarouselContainer>
+
       <Content>
         <h2>{post.title}</h2>
         <p>{post.body}</p>

@@ -1,9 +1,9 @@
-import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import styled from '@emotion/styled';
 import Post from './Post';
 import Container from '../common/Container';
 import useWindowWidth from '../hooks/useWindowWidth';
+import { fetchPosts } from '../../server/posts/posts.service';
 
 const PostListContainer = styled.div(() => ({
   display: 'flex',
@@ -43,31 +43,22 @@ export default function Posts() {
   // Reread posts when posts are updated
   useEffect(() => {}, [posts]);
 
-  // Fetch posts within the range of start and limit
-  const fetchPosts = async () => {
-    const { data: newPosts } = await axios.get('/api/v1/posts', {
-      params: { start, limit },
-    });
-    start += limit;
-
-    return newPosts;
-  };
-
   // Fetch initial posts
-  useEffect(() => {
+  useEffect(async () => {
     const fetchInitialPosts = async () => {
-      const posts = await fetchPosts();
+      const posts = await fetchPosts({start, limit});
+      console.log(posts);
       setPosts(posts);
     };
 
-    fetchInitialPosts();
+    await fetchInitialPosts();
   }, [isSmallerDevice]);
 
   const handleClick = async () => {
     setIsLoading(true);
 
     // Fetch more posts and append them to the existing posts
-    const morePosts = await fetchPosts();
+    const morePosts = await fetchPosts({ start, limit });
     setPosts(prevPosts => [...prevPosts, ...morePosts]);
 
     setIsLoading(false);
