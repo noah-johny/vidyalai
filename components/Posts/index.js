@@ -35,40 +35,60 @@ const LoadMoreButton = styled.button(() => ({
 export default function Posts() {
   const [posts, setPosts] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-
   const { isSmallerDevice } = useWindowWidth();
 
+  let start = 0;
+  const limit = isSmallerDevice ? 5 : 10;
+
+  // Reread posts when posts are updated
+  useEffect(() => {}, [posts]);
+
+  // Fetch posts within the range of start and limit
+  const fetchPosts = async () => {
+    const { data: newPosts } = await axios.get('/api/v1/posts', {
+      params: { start, limit },
+    });
+    start += limit;
+
+    return newPosts;
+  };
+
+  // Fetch initial posts
   useEffect(() => {
-    const fetchPost = async () => {
-      const { data: posts } = await axios.get('/api/v1/posts', {
-        params: { start: 0, limit: isSmallerDevice ? 5 : 10 },
-      });
+    const fetchInitialPosts = async () => {
+      const posts = await fetchPosts();
       setPosts(posts);
     };
 
-    fetchPost();
+    fetchInitialPosts();
   }, [isSmallerDevice]);
 
-  const handleClick = () => {
+  const handleClick = async () => {
     setIsLoading(true);
 
-    setTimeout(() => {
-      setIsLoading(false);
-    }, 3000);
+    // Fetch more posts and append them to the existing posts
+    const morePosts = await fetchPosts();
+    setPosts(prevPosts => [...prevPosts, ...morePosts]);
+
+    setIsLoading(false);
   };
 
   return (
     <Container>
       <PostListContainer>
-        {posts.map(post => (
-          <Post post={post} />
-        ))}
+        {posts.length !== 0 ? (
+          posts.map(post => <Post post={post} />)
+        ) : (
+          <span style={{ marginTop: 24 }}>Loading posts...</span>
+        )}
       </PostListContainer>
 
       <div style={{ display: 'flex', justifyContent: 'center' }}>
-        <LoadMoreButton onClick={handleClick} disabled={isLoading}>
-          {!isLoading ? 'Load More' : 'Loading...'}
-        </LoadMoreButton>
+        {posts.length !== 0 && (
+          <LoadMoreButton onClick={handleClick} disabled={isLoading}>
+            {!isLoading ? 'Load More' : 'Loading...'}
+          </LoadMoreButton>
+        )}
       </div>
     </Container>
   );
