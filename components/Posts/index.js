@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import styled from '@emotion/styled';
 import Post from './Post';
 import Container from '../common/Container';
-import useWindowWidth from '../hooks/useWindowWidth';
 import { fetchPosts } from '../../server/posts/posts.service';
+import { WindowWidthContext } from '../contexts/WindowWidthContext';
 
 const PostListContainer = styled.div(() => ({
   display: 'flex',
@@ -35,7 +35,7 @@ const LoadMoreButton = styled.button(() => ({
 export default function Posts() {
   const [posts, setPosts] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-  const { isSmallerDevice } = useWindowWidth();
+  const { isSmallerDevice } = useContext(WindowWidthContext);
 
   let start = 0;
   const limit = isSmallerDevice ? 5 : 10;
@@ -46,7 +46,7 @@ export default function Posts() {
   // Fetch initial posts
   useEffect(async () => {
     const fetchInitialPosts = async () => {
-      const posts = await fetchPosts({start, limit});
+      const posts = await fetchPosts({ start, limit });
       console.log(posts);
       setPosts(posts);
     };
